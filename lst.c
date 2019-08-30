@@ -48,6 +48,9 @@ int main() {
     int menor_slack = MAX_T;
     int tarefa_menor_slack = 0;
 
+    TAREFA anterior;
+    int indice_da_anterior;
+
     //execucao de cada tempo //
     for(int j = 0; j < t; j++)
     {
@@ -114,11 +117,70 @@ int main() {
         }
 
         grade[j] = tarefas[tarefa_menor_slack].id;
+
+        if(j>0)
+        {
+          if(grade[j-1] == '.')
+          {
+            num_preemp++;
+          }
+        } 
       }
       // todas as tarefas foram concluidas
       else
       {
         grade[j] = '.';
+
+        if(grade[j-1] != '.')
+        {
+          num_trocas_cont++;
+        }
+      }
+
+      // computar as trocas de contexto e preempcoes
+      if(j == 0)
+      {
+        anterior = tarefas[tarefa_menor_slack];
+        indice_da_anterior = tarefa_menor_slack;
+      }
+      else
+      {
+        // tarefa anterior e diferente da atual
+        if((anterior.id != tarefas[tarefa_menor_slack].id) && grade[j-1] != '.')
+        {
+          num_trocas_cont++;
+
+          // tarefa anterior e diferente e nao tinha acabado
+          if(anterior.c - comp_abs[indice_da_anterior] != 0)
+          {
+            num_preemp++;
+          }
+          anterior = tarefas[tarefa_menor_slack];
+          indice_da_anterior = tarefa_menor_slack;
+        }
+        else if(grade[j-1] == '.')
+        {
+          if(grade[j] != '.')
+          {
+            num_trocas_cont++;
+            anterior = tarefas[tarefa_menor_slack];
+            indice_da_anterior = tarefa_menor_slack;
+          }
+        }
+      }
+
+      // na ultima execucao, se a tarefa for completada ou estiver em idle, troca_de_contexto++
+      if(j == t-1)
+      {
+        if(completa[tarefa_menor_slack] == 1 || grade[j] == '.')
+        {
+          num_trocas_cont++;
+        }
+
+        if(grade[j] == '.')
+        {
+          num_preemp++;
+        }
       }
       
       menor_slack = MAX_T;
@@ -130,7 +192,7 @@ int main() {
 
     // RESULTADOS
 
-    printf("%s\n%d %d\n\n", grade, num_preemp, num_trocas_cont);
+    printf("%s\n%d %d\n\n", grade, num_trocas_cont, num_preemp);
   }
   return 0;
 }
