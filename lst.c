@@ -1,8 +1,4 @@
 #include <stdio.h>
-#include <math.h>
-#include <ctype.h>
-
-//Testando ssh key
 
 #define MAX_N 26
 #define MAX_T 2048
@@ -32,8 +28,8 @@ int main() {
        tarefas[i].id = 'A'+i;
        scanf("%d%d%d", &(tarefas[i].c), &(tarefas[i].p), &(tarefas[i].d) );
     }
-    // SIMULACAO //
 
+    // SIMULACAO //
     num_preemp = 0;
     num_trocas_cont = 0;
 
@@ -90,6 +86,14 @@ int main() {
           {
             menor_slack = slack_aux;
             tarefa_menor_slack = k;
+          }
+          else if(slack_aux == menor_slack)
+          {
+            if(k < tarefa_menor_slack)
+            {
+              menor_slack = slack_aux;
+              tarefa_menor_slack = k;            
+            }
           }
         }
         // se foi concluida, aumenta numero de completas (se (completas == n_tarefas) entao o idle ganha o processador)
