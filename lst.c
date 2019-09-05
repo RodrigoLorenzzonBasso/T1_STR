@@ -120,7 +120,7 @@ int main() {
           id = id + 32;
         }
 
-        grade[j] = tarefas[tarefa_menor_slack].id;
+        grade[j] = id;
 
         if(j>0)
         {
