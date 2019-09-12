@@ -30,6 +30,7 @@ int main() {
     }
 
     // SIMULACAO //
+
     num_preemp = 0;
     num_trocas_cont = 0;
 
@@ -53,6 +54,8 @@ int main() {
       // execucao para cada tarefa // 
       for(int k = 0; k < n_tarefas; k++)
       {
+        // 1. Antes de Executar as tarefas, verificar as informacoes de cada tarefa
+
         // comecou a execucao, setar primeiros deadlines e periodos
         if(j == 0) 
         {
@@ -60,7 +63,7 @@ int main() {
           deadline_abs[k] = tarefas[k].d;
           comp_abs[k] = 0;
         }
-        // reset do periodo, setar novos deadlines, periodos e computacoes absolutas
+        // reset do periodo; setar novos deadlines, periodos e computacoes absolutas
         else if((j % tarefas[k].p == 0) && (completa[k] == 1))
         {
           periodo_abs[k] = ((j / tarefas[k].p)+1) * tarefas[k].p;
@@ -68,7 +71,7 @@ int main() {
           comp_abs[k] = 0;
           completa[k] = 0;
         }
-        // tarefa foi completa apos o prazo
+        // caso a tarefa perca o prazo
         else if((completa[k] == 1) && (deadline_abs[k] < j))
         {
           periodo_abs[k] = ((j / tarefas[k].p)+1) * tarefas[k].p;
@@ -77,7 +80,11 @@ int main() {
           completa[k] = 0;
         }
 
-        // se a tarefa ainda n foi concluida, calcular tempo de slack
+        ///////////////////////////////////////////////////////////////////////////
+
+        // 2. Calculo para saber qual tarefa vai executar
+
+        // se a tarefa ainda nao foi concluida, calcular tempo de slack
         if(completa[k] == 0)
         {    
           int slack_aux = (deadline_abs[k] - j) - (tarefas[k].c - comp_abs[k]);
@@ -102,13 +109,18 @@ int main() {
           n_completas++;
         }
 
-      }
+        ////////////////////////////////////////////////////////////////////////////////
+
+      } // para cada tarefa (k)
+
+      // 3. Calculado o menor slack, executar
 
       // concluir uma computacao da tarefa com menor slack
       if(n_completas != n_tarefas)
       {
         comp_abs[tarefa_menor_slack]++;
 
+        // testar se a tarefa foi concluida
         if((tarefas[tarefa_menor_slack].c - comp_abs[tarefa_menor_slack]) == 0)
           completa[tarefa_menor_slack] = 1;
 
@@ -122,6 +134,8 @@ int main() {
 
         grade[j] = id;
 
+        // caso estejamos executando uma tarefa e anteriormente na grade
+        // houve um idle, aumenta o numero de preempcoes
         if(j>0)
         {
           if(grade[j-1] == '.')
@@ -130,18 +144,24 @@ int main() {
           }
         } 
       }
-      // todas as tarefas foram concluidas
+      // todas as tarefas foram concluidas, idle executa
       else
       {
         grade[j] = '.';
 
+        // caso executamos um idle e a execucao anterior n foi um idle tambem
+        // o numero de trocas de contexto aumenta
         if(grade[j-1] != '.')
         {
           num_trocas_cont++;
         }
       }
 
-      // computar as trocas de contexto e preempcoes
+      ////////////////////////////////////////////////////////////////////////////////
+
+      // 4. Calcular trocas de contexto e preempcoes
+
+      // guardar a ultima execucao em uma variavel para descobrir se ha trocas
       if(j == 0)
       {
         anterior = tarefas[tarefa_menor_slack];
@@ -190,7 +210,9 @@ int main() {
       menor_slack = MAX_T;
       n_completas = 0;
 
-    }
+      ///////////////////////////////////////////////////////////////////////////////////////
+
+    } // para cada tempo (j)
 
     grade[t] = '\0';
 
