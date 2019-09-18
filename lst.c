@@ -106,7 +106,7 @@ int main() {
       {
         char id = tarefas[tarefa_menor_slack].id;
 
-        // o slack da tarefa que vai executar e negativo, portanto ela perdeu o prazo
+        // o slack da tarefa que vai executar e negativo, portanto ela vai perder/perdeu o prazo
         if(menor_slack < 0)
         {
           id = tolower(id);
