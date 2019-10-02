@@ -1,3 +1,8 @@
+/******************************
+ * Trabalho 1 Sistemas de Tempo Real
+ * Rodrigo Lorenzzon Basso
+*******************************/
+
 #include <stdio.h>
 #include <ctype.h>
 
